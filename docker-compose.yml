@@ -1,0 +1,17 @@
+services:
+
+  tracking-server:
+    build:
+      context: .
+      dockerfile: "${DOCKERFILE:-Dockerfile}"
+
+    ports:
+      # MLflow UI is available at http://localhost:5050
+      - "5050:5000"
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --backend-store-uri postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db-postgresql-sfo3-sutherland-do-user-17404056-0.i.db.ondigitalocean.com:25060/mlflowdb?sslmode=require
+      --default-artifact-root s3://spaces-bucket-sutherland 
+      --serve-artifacts
+      --gunicorn-opts "--log-level debug"
